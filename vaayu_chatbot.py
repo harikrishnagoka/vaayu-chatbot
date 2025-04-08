@@ -74,12 +74,47 @@ st.write("Get your **Prakriti**, **Agni**, and **Ama** evaluated using face and 
 face_img = st.file_uploader("Upload your face photo", type=["jpg", "jpeg", "png"])
 tongue_img = st.file_uploader("Upload your tongue photo", type=["jpg", "jpeg", "png"])
 
+def analyze_face_ui():
+    st.subheader("Face Feature Simulation")
+
+    face_shape = st.selectbox("Select Face Shape", ["long", "oval", "round"])
+    skin_type = st.selectbox("Select Skin Type", ["dry", "reddish", "oily"])
+    eye_type = st.selectbox("Select Eye Type", ["small", "sharp", "large"])
+    lip_type = st.selectbox("Select Lip Type", ["dry", "medium", "full"])
+
+    return {
+        "face_shape": face_shape,
+        "skin_type": skin_type,
+        "eye_type": eye_type,
+        "lip_type": lip_type
+    }
+
+def analyze_tongue_ui():
+    st.subheader("Tongue Feature Simulation")
+
+    tongue_color = st.selectbox("Select Tongue Color", ["pale", "reddish", "normal"])
+    coating = st.selectbox("Select Coating Type", ["none", "thin white", "thick white"])
+    texture = st.selectbox("Select Texture", ["smooth", "cracked"])
+    greasy = st.checkbox("Greasy Tongue?", value=False)
+
+    return {
+        "color": tongue_color,
+        "coating": coating,
+        "texture": texture,
+        "greasy": greasy
+    }
+
+
 if st.button("Analyze Now"):
-    if face_img and tongue_img:
-        with st.spinner("Analyzing with Ayurvedic intelligence..."):
-            face_data = analyze_face(Image.open(face_img))
-            tongue_data = analyze_tongue(Image.open(tongue_img))
-            prakriti, agni, ama, vikriti = map_to_dosha(face_data, tongue_data)
+    prakriti, agni, ama, vikriti = map_to_dosha(face_data, tongue_data)
+
+    st.success("Analysis Complete!")
+    st.subheader("Your Ayurvedic Profile")
+    st.markdown(f"- **Prakriti:** {prakriti}")
+    st.markdown(f"- **Agni Type:** {agni}")
+    st.markdown(f"- **Ama Level:** {ama}")
+    st.markdown(f"- **Vikriti:** {vikriti}")
+
 
         st.success("Analysis Complete!")
         st.subheader("Your Ayurvedic Profile")
