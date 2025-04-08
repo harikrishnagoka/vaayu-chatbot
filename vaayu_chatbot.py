@@ -5,29 +5,64 @@ import random
 # ---- RULE-BASED MOCK MAPPING ---- #
 
 def analyze_face(image):
-    # Dummy logic: detect face shape by image name keyword
-    image = image.convert("RGB")
+    # Simulated rules based on facial observation (mock logic)
     return {
-        "face_shape": "long",
-        "skin_type": "dry",
-        "eye_type": "small"
+        "face_shape": "oval",
+        "skin_type": "reddish",
+        "eye_type": "sharp",
+        "lip_type": "medium"
     }
 
 def analyze_tongue(image):
-    # Dummy logic: detect color and coating
-    image = image.convert("RGB")
+    # Simulated tongue features
     return {
-        "color": "red",
-        "coating": "thick white",
-        "texture": "cracked"
+        "color": "reddish",
+        "coating": "thin white",
+        "texture": "cracked",
+        "greasy": False
     }
 
 def map_to_dosha(face, tongue):
-    prakriti = "Vata-Pitta" if face["face_shape"] == "long" and tongue["texture"] == "cracked" else "Kapha"
-    agni = "Vishama" if tongue["texture"] == "cracked" else "Sama"
-    ama = "Moderate" if tongue["coating"] == "thick white" else "Low"
-    vikriti = "Vata imbalance" if face["skin_type"] == "dry" else "None"
+    # Prakriti estimation
+    if face["face_shape"] == "oval" and face["skin_type"] == "reddish":
+        prakriti = "Pitta"
+    elif face["face_shape"] == "long" and face["skin_type"] == "dry":
+        prakriti = "Vata"
+    elif face["face_shape"] == "round" and face["skin_type"] == "oily":
+        prakriti = "Kapha"
+    else:
+        prakriti = "Vata-Pitta"
+
+    # Agni detection
+    if tongue["texture"] == "cracked":
+        agni = "Vishama Agni"
+    elif tongue["color"] == "reddish" and tongue["coating"] == "none":
+        agni = "Tikshna Agni"
+    elif tongue["coating"] == "thick white":
+        agni = "Mandagni"
+    else:
+        agni = "Sama Agni"
+
+    # Ama level
+    if tongue["coating"] == "thick white":
+        ama = "High"
+    elif tongue["coating"] == "thin white":
+        ama = "Moderate"
+    else:
+        ama = "Low"
+
+    # Vikriti detection
+    if tongue["texture"] == "cracked" and face["skin_type"] == "dry":
+        vikriti = "Vata imbalance"
+    elif tongue["color"] == "reddish" and face["skin_type"] == "reddish":
+        vikriti = "Pitta imbalance"
+    elif tongue["greasy"]:
+        vikriti = "Kapha imbalance"
+    else:
+        vikriti = "Mild dosha fluctuation"
+
     return prakriti, agni, ama, vikriti
+
 
 # ---- STREAMLIT UI ---- #
 
