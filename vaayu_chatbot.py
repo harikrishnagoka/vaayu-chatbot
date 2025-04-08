@@ -1,131 +1,107 @@
 import streamlit as st
-from PIL import Image
-import random
 
-# ---- RULE-BASED MOCK MAPPING ---- #
+st.set_page_config(page_title="VaayuBot – Ayurvedic Health Scan", layout="centered")
 
-def analyze_face(image):
-    # Simulated rules based on facial observation (mock logic)
-    return {
-        "face_shape": "oval",
-        "skin_type": "reddish",
-        "eye_type": "sharp",
-        "lip_type": "medium"
-    }
+st.title("🌿 VaayuBot – Ayurvedic Health Scanner")
+st.write("Simulate your **Prakriti**, **Agni**, **Ama**, and **Vikriti** analysis using traditional Ayurvedic logic.")
 
-def analyze_tongue(image):
-    # Simulated tongue features
-    return {
-        "color": "reddish",
-        "coating": "thin white",
-        "texture": "cracked",
-        "greasy": False
-    }
+# 1. UI for Face Feature Simulation
+st.header("👤 Face Features (Simulated)")
 
-def map_to_dosha(face, tongue):
-    # Prakriti estimation
+face_shape = st.selectbox("Select Face Shape", ["long", "oval", "round"])
+skin_type = st.selectbox("Select Skin Type", ["dry", "reddish", "oily"])
+eye_type = st.selectbox("Select Eye Type", ["small", "sharp", "large"])
+lip_type = st.selectbox("Select Lip Type", ["dry", "medium", "full"])
+
+# 2. UI for Tongue Feature Simulation
+st.header("👅 Tongue Features (Simulated)")
+
+tongue_color = st.selectbox("Select Tongue Color", ["pale", "reddish", "normal"])
+coating = st.selectbox("Select Tongue Coating", ["none", "thin white", "thick white"])
+texture = st.selectbox("Select Tongue Texture", ["smooth", "cracked"])
+greasy = st.checkbox("Is the tongue greasy?", value=False)
+
+# 3. Logic Mapping Function
+def map_to_ayurvedic_profile(face, tongue):
+    # Prakriti Logic
     if face["face_shape"] == "oval" and face["skin_type"] == "reddish":
-        prakriti = "Pitta"
+        prakriti = "🔥 Pitta"
     elif face["face_shape"] == "long" and face["skin_type"] == "dry":
-        prakriti = "Vata"
+        prakriti = "💨 Vata"
     elif face["face_shape"] == "round" and face["skin_type"] == "oily":
-        prakriti = "Kapha"
+        prakriti = "🌊 Kapha"
     else:
-        prakriti = "Vata-Pitta"
+        prakriti = "⚖️ Vata-Pitta (Dual)"
 
-    # Agni detection
+    # Agni Logic
     if tongue["texture"] == "cracked":
-        agni = "Vishama Agni"
+        agni = "⚡ Vishama Agni"
     elif tongue["color"] == "reddish" and tongue["coating"] == "none":
-        agni = "Tikshna Agni"
+        agni = "🔥 Tikshna Agni"
     elif tongue["coating"] == "thick white":
-        agni = "Mandagni"
+        agni = "❄️ Mandagni"
     else:
-        agni = "Sama Agni"
+        agni = "✅ Sama Agni"
 
-    # Ama level
+    # Ama Logic
     if tongue["coating"] == "thick white":
-        ama = "High"
+        ama = "🚫 High"
     elif tongue["coating"] == "thin white":
-        ama = "Moderate"
+        ama = "⚠️ Moderate"
     else:
-        ama = "Low"
+        ama = "✅ Low"
 
-    # Vikriti detection
+    # Vikriti Logic
     if tongue["texture"] == "cracked" and face["skin_type"] == "dry":
-        vikriti = "Vata imbalance"
+        vikriti = "💨 Vata Imbalance"
     elif tongue["color"] == "reddish" and face["skin_type"] == "reddish":
-        vikriti = "Pitta imbalance"
+        vikriti = "🔥 Pitta Imbalance"
     elif tongue["greasy"]:
-        vikriti = "Kapha imbalance"
+        vikriti = "🌊 Kapha Imbalance"
     else:
-        vikriti = "Mild dosha fluctuation"
+        vikriti = "✅ Balanced or Mild Fluctuation"
 
     return prakriti, agni, ama, vikriti
 
-
-# ---- STREAMLIT UI ---- #
-
-st.set_page_config(page_title="VaayuBot – Ayurveda Chatbot", layout="centered")
-
-st.title("VaayuBot – Ayurvedic Health Scanner")
-st.write("Get your **Prakriti**, **Agni**, and **Ama** evaluated using face and tongue scan!")
-
-face_img = st.file_uploader("Upload your face photo", type=["jpg", "jpeg", "png"])
-tongue_img = st.file_uploader("Upload your tongue photo", type=["jpg", "jpeg", "png"])
-
-def analyze_face_ui():
-    st.subheader("Face Feature Simulation")
-
-    face_shape = st.selectbox("Select Face Shape", ["long", "oval", "round"])
-    skin_type = st.selectbox("Select Skin Type", ["dry", "reddish", "oily"])
-    eye_type = st.selectbox("Select Eye Type", ["small", "sharp", "large"])
-    lip_type = st.selectbox("Select Lip Type", ["dry", "medium", "full"])
-
-    return {
+# 4. Analyze Button
+if st.button("🔍 Analyze Now"):
+    face_data = {
         "face_shape": face_shape,
         "skin_type": skin_type,
         "eye_type": eye_type,
         "lip_type": lip_type
     }
-
-def analyze_tongue_ui():
-    st.subheader("Tongue Feature Simulation")
-
-    tongue_color = st.selectbox("Select Tongue Color", ["pale", "reddish", "normal"])
-    coating = st.selectbox("Select Coating Type", ["none", "thin white", "thick white"])
-    texture = st.selectbox("Select Texture", ["smooth", "cracked"])
-    greasy = st.checkbox("Greasy Tongue?", value=False)
-
-    return {
+    tongue_data = {
         "color": tongue_color,
         "coating": coating,
         "texture": texture,
         "greasy": greasy
     }
 
+    prakriti, agni, ama, vikriti = map_to_ayurvedic_profile(face_data, tongue_data)
 
-if st.button("Analyze Now"):
-    prakriti, agni, ama, vikriti = map_to_dosha(face_data, tongue_data)
-
-    st.success("Analysis Complete!")
-    st.subheader("Your Ayurvedic Profile")
+    st.success("✅ Analysis Complete!")
+    st.subheader("🧠 Your Ayurvedic Profile")
     st.markdown(f"- **Prakriti:** {prakriti}")
     st.markdown(f"- **Agni Type:** {agni}")
     st.markdown(f"- **Ama Level:** {ama}")
     st.markdown(f"- **Vikriti:** {vikriti}")
 
+    st.subheader("💡 Recommendations")
+    if "Vata" in prakriti:
+        st.markdown("- Eat warm, moist, grounding foods")
+        st.markdown("- Oil massage (Abhyanga) and Vata-balancing herbs like Ashwagandha")
+    if "Pitta" in prakriti:
+        st.markdown("- Favor cooling, bitter, and sweet foods")
+        st.markdown("- Avoid spicy, sour, fermented items")
+    if "Kapha" in prakriti:
+        st.markdown("- Use light, dry, warming foods")
+        st.markdown("- Exercise and stimulate digestion with Trikatu or Pippali")
 
-        st.success("Analysis Complete!")
-        st.subheader("Your Ayurvedic Profile")
-        st.markdown(f"- **Prakriti:** {prakriti}")
-        st.markdown(f"- **Agni Type:** {agni}")
-        st.markdown(f"- **Ama Level:** {ama}")
-        st.markdown(f"- **Vikriti:** {vikriti}")
+---
 
-        st.subheader("Next Steps")
-        st.markdown("- Try warm, grounding meals to balance Vata.")
-        st.markdown("- Avoid raw/cold foods if agni is Vishama.")
-        st.markdown("- Consider herbs like Trikatu or Pippali.")
-    else:
-        st.warning("Please upload both face and tongue images.")
+### ✅ How to Run Locally
+
+```bash
+pip install streamlit
+streamlit run vaayu_chatbot.py
